@@ -3,19 +3,16 @@ import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { 
   Search, Map as MapIcon, Download, Heart, Menu, X, 
   Globe, Move, ExternalLink,
-  Facebook, Linkedin, Table as TableIcon
+  Facebook, Linkedin, Table as TableIcon, MessageCircle
 } from 'lucide-react';
 import { MAP_DATA, INDEX_IMAGE_URL } from './constants.ts';
 import { MapArea } from './types.ts';
 
 const CUSTOM_ICON_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBQH6f47cVdJ1fU-DZmPPG5PnKrbZhyaVNBe-TL2S2l-_Y9aUEvH9lbu8zyDc0kVDStDYa-_Prj_MWv1EVRIEBfEPYK0KJ954k01sFojNVOHcG6KTLDnX0ahYVSA5H2R-MOqdVp0F1EZbHq-yyc0_qnFGHFsktcrq7mlsPxCny8oXcVQAPZyP2OJKv1g/w165-h165/134ef7f1-ea1d-4243-9cd2-6473f1337f19.png";
-
-// WhatsApp SVG Icon
-const WhatsAppIcon = () => (
-  <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.937 3.659 1.431 5.631 1.432h.006c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-);
+const SOURCE_FAVICON_URL = "https://jemecasseausoleil.blogspot.com/favicon.ico";
+const SOURCE_ARTICLE_URL = "https://jemecasseausoleil.blogspot.com/2013/04/cartes-de-la-tunisie.html";
+const LINKEDIN_URL = "https://www.linkedin.com/in/Jilitelmostafa";
+const APP_TITLE = "Cartes topographiques de la Tunisie";
 
 const TUNISIA_RED = '#E70013';
 const SELECTION_GREEN = '#22c55e';
@@ -32,7 +29,7 @@ const MapCard: React.FC<{
     <div className="p-6 flex-1">
       <div className="flex justify-between items-start mb-4">
         <span className={`bg-[${TUNISIA_RED}] text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tight`}>
-          SHEET {map.id}
+          FEUILLE {map.id}
         </span>
         <button 
           onClick={(e) => { e.stopPropagation(); onToggleFavorite(map.id); }} 
@@ -42,16 +39,16 @@ const MapCard: React.FC<{
         </button>
       </div>
       <h3 className="text-black font-black text-2xl leading-tight mb-2 group-hover:text-[${SELECTION_GREEN}] transition-colors">
-        {map.name}
+        {map.nameAr} <span className="block text-sm opacity-50 font-normal">{map.name}</span>
       </h3>
-      <p className="text-black/50 text-xs font-bold uppercase tracking-widest">Tunisia • 1/50 000</p>
+      <p className="text-black/50 text-xs font-bold uppercase tracking-widest">Tunisie • 1/50 000</p>
     </div>
     <div className="p-4 bg-slate-50 border-t border-slate-100 flex gap-3">
       <button 
         onClick={() => onViewOnMap(map.id)}
         className="flex-1 bg-white border-2 border-black text-black hover:bg-black hover:text-white py-3 rounded-xl text-xs font-black flex items-center justify-center gap-2 transition-all active:scale-95"
       >
-        <MapIcon className="w-4 h-4" /> عرض الخريطة
+        <MapIcon className="w-4 h-4" /> Voir sur la carte
       </button>
       <a 
         href={map.href} 
@@ -59,7 +56,7 @@ const MapCard: React.FC<{
         rel="noreferrer" 
         onClick={() => onDownload(map.id)}
         className={`bg-[${SELECTION_GREEN}] hover:brightness-110 text-white p-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center`}
-        title="télécharger"
+        title="Télécharger"
       >
         <Download className="w-5 h-5" />
       </a>
@@ -77,10 +74,10 @@ const Sidebar: React.FC<{
   onDownload: (id: string) => void;
 }> = ({ searchQuery, setSearchQuery, filteredMaps, selectedId, onSelect, onClose, onDownload }) => {
   return (
-    <div className="flex flex-col h-full bg-white border-l border-slate-200 shadow-xl overflow-hidden z-[110] relative">
+    <div className="flex flex-col h-full bg-white border-r border-slate-200 shadow-xl overflow-hidden z-[110] relative" dir="ltr">
       <button 
         onClick={onClose}
-        className="lg:hidden absolute left-4 top-4 p-2 bg-slate-100 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors z-[120]"
+        className="lg:hidden absolute right-4 top-4 p-2 bg-slate-100 rounded-full hover:bg-rose-50 hover:text-rose-500 transition-colors z-[120]"
       >
         <X className="w-6 h-6 text-black" />
       </button>
@@ -91,59 +88,62 @@ const Sidebar: React.FC<{
             <img src={CUSTOM_ICON_URL} alt="Logo" className="w-8 h-8 object-cover" />
           </div>
           <div>
-            <h1 className="text-xl font-black text-black leading-none">خرائط تونس الطبوغرافية 1/50000</h1>
-            <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">Digital Index</p>
+            <h1 className="text-lg font-black text-black leading-none">{APP_TITLE}</h1>
+            <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">Digital Index 1/50 000</p>
           </div>
         </div>
         
         <div className="relative">
-          <Search className="absolute right-3 top-1/2 -translate-y-1/2 text-black/30 w-4 h-4" />
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-black/30 w-4 h-4" />
           <input
             type="text"
-            dir="rtl"
-            placeholder="بحث سريع برقم أو اسم..."
-            className={`w-full pr-10 pl-4 py-4 bg-slate-50 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-[${TUNISIA_RED}] transition-all text-base font-black text-black`}
+            placeholder="Recherche par nom ou n°..."
+            className={`w-full pl-10 pr-4 py-3 bg-slate-50 border-2 border-slate-100 rounded-xl focus:outline-none focus:border-[${TUNISIA_RED}] transition-all text-sm font-bold text-black`}
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
           />
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 space-y-3 bg-white">
+      <div className="flex-1 overflow-y-auto p-3 space-y-2 bg-white">
         {filteredMaps.map((map) => (
           <div key={map.id} className="flex gap-2">
             <button
               onClick={() => onSelect(map.id)}
-              className={`flex-1 p-5 rounded-xl border-2 text-right transition-all flex items-center gap-4 group ${selectedId === map.id ? `bg-[${SELECTION_GREEN}] border-[${SELECTION_GREEN}] text-white` : 'bg-white border-slate-100 hover:border-slate-300 text-black'}`}
+              className={`flex-1 p-4 rounded-xl border-2 text-left transition-all flex items-center gap-4 group ${selectedId === map.id ? `bg-[${SELECTION_GREEN}] border-[${SELECTION_GREEN}] text-white` : 'bg-white border-slate-100 hover:border-slate-300 text-black'}`}
             >
-              <span className={`text-xs font-black px-2.5 py-1 rounded-full ${selectedId === map.id ? 'bg-white text-black' : `bg-[${SELECTION_GREEN}]/10 text-[${SELECTION_GREEN}]`}`}>
+              <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${selectedId === map.id ? 'bg-white text-black' : `bg-[${SELECTION_GREEN}]/10 text-[${SELECTION_GREEN}]`}`}>
                 {map.id}
               </span>
-              <span className="text-lg font-black flex-1 truncate">{map.name}</span>
+              <div className="flex flex-col">
+                <span className="text-sm font-black truncate">{map.name}</span>
+                <span className={`text-[10px] ${selectedId === map.id ? 'text-white/70' : 'text-black/40'}`} dir="rtl">{map.nameAr}</span>
+              </div>
             </button>
             <a
               href={map.href}
               target="_blank"
               rel="noreferrer"
               onClick={() => onDownload(map.id)}
-              className="hidden lg:flex p-4 bg-[#22c55e] hover:bg-[#16a34a] text-white rounded-xl items-center justify-center transition-all active:scale-95"
-              title="تحميل"
+              className="hidden lg:flex p-3 bg-[#22c55e] hover:bg-[#16a34a] text-white rounded-xl items-center justify-center transition-all active:scale-95"
+              title="Télécharger"
             >
-              <Download className="w-6 h-6" />
+              <Download className="w-5 h-5" />
             </a>
           </div>
         ))}
         {filteredMaps.length === 0 && (
-          <p className="text-center text-black/30 text-xs py-10 font-black">لا توجد نتائج</p>
+          <p className="text-center text-black/30 text-xs py-10 font-black">Aucun résultat</p>
         )}
       </div>
 
       <div className="p-4 border-t border-slate-100 bg-slate-50">
         <div className="flex items-center justify-center gap-4 mb-3">
-          <a href="https://www.facebook.com/jilitsig/" target="_blank" rel="noreferrer" className="social-icon bg-blue-600 text-white"><Facebook className="w-4 h-4" /></a>
-          <a href="https://www.linkedin.com/in/Jilitelmostafa" target="_blank" rel="noreferrer" className="social-icon bg-blue-800 text-white"><Linkedin className="w-4 h-4" /></a>
+          <a href="https://www.facebook.com/jilitsig/" target="_blank" rel="noreferrer" className="social-icon bg-blue-600 text-white" title="Facebook"><Facebook className="w-4 h-4" /></a>
+          <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="social-icon bg-blue-800 text-white" title="LinkedIn"><Linkedin className="w-4 h-4" /></a>
+          <a href={SOURCE_ARTICLE_URL} target="_blank" rel="noreferrer" className="social-icon bg-amber-500 text-white" title="Blog"><Globe className="w-4 h-4" /></a>
         </div>
-        <p className="text-[10px] font-black text-black/30 text-center uppercase tracking-widest">© 2025 Jilit • Tunisia Archive</p>
+        <p className="text-[10px] font-black text-black/30 text-center uppercase tracking-widest">jilitsig@gmail.com</p>
       </div>
     </div>
   );
@@ -270,9 +270,8 @@ const InteractiveMap: React.FC<{
             <input
               ref={searchInputRef}
               type="text"
-              dir="rtl"
-              placeholder="ابحث بالاسم أو الرقم..."
-              className="w-full px-6 py-5 outline-none font-black text-black text-base border-b-2 border-slate-50"
+              placeholder="Nom ou numéro..."
+              className="w-full px-6 py-4 outline-none font-bold text-black text-sm border-b-2 border-slate-50"
               value={quickSearchQuery}
               onChange={(e) => setQuickSearchQuery(e.target.value)}
             />
@@ -280,10 +279,10 @@ const InteractiveMap: React.FC<{
               <button
                 key={m.id}
                 onClick={() => { onSelect(m.id); setIsQuickSearchOpen(false); }}
-                className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors text-right border-b border-slate-50 last:border-0"
+                className="w-full flex items-center justify-between px-6 py-3 hover:bg-slate-50 transition-colors text-left border-b border-slate-50 last:border-0"
               >
-                <span className={`text-[10px] font-black text-white bg-[${SELECTION_GREEN}] px-2.5 py-1 rounded-full`}>{m.id}</span>
-                <span className="text-sm font-black text-black">{m.name}</span>
+                <span className="text-sm font-bold text-black">{m.name}</span>
+                <span className={`text-[9px] font-black text-white bg-[${SELECTION_GREEN}] px-2 py-0.5 rounded-full`}>{m.id}</span>
               </button>
             ))}
           </div>
@@ -295,8 +294,9 @@ const InteractiveMap: React.FC<{
           className="fixed pointer-events-none z-[100] bg-white px-6 py-4 rounded-3xl shadow-2xl border-2 border-black -translate-x-1/2 -translate-y-[120%] flex flex-col items-center animate-in fade-in zoom-in duration-200"
           style={{ left: mousePos.x, top: mousePos.y }}
         >
-          <span className={`text-[${SELECTION_GREEN}] text-[10px] font-black uppercase tracking-widest mb-1`}>Sheet {hoveredMap.id}</span>
+          <span className={`text-[${SELECTION_GREEN}] text-[10px] font-black uppercase tracking-widest mb-1`}>FEUILLE {hoveredMap.id}</span>
           <span className="text-black text-xl font-black">{hoveredMap.name}</span>
+          <span className="text-black/50 text-xs mt-1" dir="rtl">{hoveredMap.nameAr}</span>
         </div>
       )}
 
@@ -337,10 +337,10 @@ const InteractiveMap: React.FC<{
         )}
       </div>
 
-      <div className="hidden sm:flex absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur px-8 py-4 rounded-full border-2 border-black shadow-2xl text-xs font-black text-black items-center gap-6">
-        <div className="flex items-center gap-2"><Move className="w-4 h-4" /> اسحب للتحريك</div>
+      <div className="hidden sm:flex absolute bottom-10 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur px-8 py-4 rounded-full border-2 border-black shadow-2xl text-[10px] font-black text-black items-center gap-6">
+        <div className="flex items-center gap-2"><Move className="w-3 h-3" /> FAITES GLISSER POUR DÉPLACER</div>
         <div className="w-px h-5 bg-black/10"></div>
-        <div className="flex items-center gap-2">استخدم العجلة للتقريب</div>
+        <div className="flex items-center gap-2">MOLETTE POUR ZOOMER</div>
         <div className="w-px h-5 bg-black/10"></div>
         <div className={`text-[${SELECTION_GREEN}] font-black`}>{Math.round(scale * 100)}%</div>
       </div>
@@ -356,6 +356,7 @@ const App: React.FC = () => {
   const [scale, setScale] = useState(0.5);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [showSourceToast, setShowSourceToast] = useState(false);
+  const [showContactButtons, setShowContactButtons] = useState(true);
   
   const [favorites, setFavorites] = useState<string[]>(() => {
     try { return JSON.parse(localStorage.getItem('m-maps-favs') || '[]'); } catch { return []; }
@@ -377,27 +378,27 @@ const App: React.FC = () => {
   const incrementDownload = (id: string) => setDownloadCounts(prev => ({ ...prev, [id]: (prev[id] || 0) + 1 }));
 
   const selectedMap = useMemo(() => MAP_DATA.find(m => m.id === selectedId), [selectedId]);
-  const whatsappLink = `https://wa.me/212668090285?text=${encodeURIComponent("مرحبا، استفسار بخصوص أرشيف الخرائط الطبوغرافية التونسية.")}`;
+  const whatsappLink = `https://wa.me/212668090285?text=${encodeURIComponent("Bonjour, j'ai une question concernant l'archive des cartes topographiques de la Tunisie.")}`;
 
   return (
-    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden text-black antialiased" dir="rtl">
+    <div className="flex flex-col lg:flex-row h-screen bg-white overflow-hidden text-black antialiased">
       
       {/* Mobile Header */}
       <div className={`lg:hidden flex items-center justify-between p-4 bg-white border-b-4 border-[${TUNISIA_RED}] z-50`}>
         <div className="flex items-center gap-2">
           <img src={CUSTOM_ICON_URL} alt="Logo" className="w-8 h-8 rounded-full shadow-sm" />
-          <span className="font-black text-black text-base">خرائط تونس الطبوغرافية 1/50000</span>
+          <span className="font-black text-black text-xs truncate max-w-[200px]">{APP_TITLE}</span>
         </div>
         <button 
           onClick={() => setIsSidebarOpen(true)} 
-          className={`p-3 bg-[${TUNISIA_RED}] text-white rounded-xl shadow-lg active:scale-95`}
+          className={`p-2 bg-[${TUNISIA_RED}] text-white rounded-lg shadow-lg active:scale-95`}
         >
-          <Menu className="w-6 h-6" />
+          <Menu className="w-5 h-5" />
         </button>
       </div>
 
       {/* Sidebar */}
-      <div className={`${isSidebarOpen ? 'translate-x-0' : 'translate-x-full'} lg:translate-x-0 fixed lg:static inset-0 z-[120] w-full lg:w-[420px] h-full transition-transform duration-500 ease-in-out`}>
+      <div className={`${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'} lg:translate-x-0 fixed lg:static inset-0 z-[120] w-full lg:w-[320px] h-full transition-transform duration-500 ease-in-out`}>
         <Sidebar 
           searchQuery={searchQuery} setSearchQuery={setSearchQuery} filteredMaps={filteredMaps} 
           selectedId={selectedId} 
@@ -408,24 +409,42 @@ const App: React.FC = () => {
       </div>
 
       <main className="flex-1 relative flex flex-col h-full overflow-hidden bg-white">
-        {/* Source Logo */}
-        <div className="fixed bottom-8 left-8 z-[80] flex flex-col items-center">
+        {/* Source Logo (Smaller) */}
+        <div className="fixed bottom-6 left-6 z-[80] flex flex-col items-center">
           {showSourceToast && (
             <div className="mb-4 animate-in fade-in slide-in-from-bottom-2 duration-300">
-              <a href="https://jemecasseausoleil.blogspot.com/" target="_blank" rel="noreferrer" className="bg-black text-white px-5 py-2.5 rounded-2xl shadow-2xl flex items-center gap-3 text-xs font-black">
-                المصدر: Je Me Casse Au Soleil <ExternalLink className="w-4 h-4" />
+              <a href={SOURCE_ARTICLE_URL} target="_blank" rel="noreferrer" className="bg-black text-white px-4 py-2 rounded-xl shadow-2xl flex items-center gap-2 text-[10px] font-black">
+                Source: Je Me Casse Au Soleil <ExternalLink className="w-3 h-3" />
               </a>
             </div>
           )}
-          <button onClick={() => setShowSourceToast(!showSourceToast)} className={`w-14 h-14 bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-slate-100 overflow-hidden`}>
-            <img src={CUSTOM_ICON_URL} alt="Source" className="w-10 h-10 object-contain" />
+          <button onClick={() => setShowSourceToast(!showSourceToast)} className={`w-10 h-10 bg-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-slate-100 overflow-hidden`}>
+            <img src={SOURCE_FAVICON_URL} alt="Source" className="w-6 h-6 object-contain" />
           </button>
         </div>
 
-        {/* WhatsApp Button */}
-        <a href={whatsappLink} target="_blank" rel="noreferrer" className="fixed bottom-8 right-8 w-14 h-14 bg-[#25D366] text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 active:scale-95 transition-all z-[80]">
-          <WhatsAppIcon />
-        </a>
+        {/* Floating Action Buttons (Smaller & Closable) */}
+        {showContactButtons && (
+          <div className="fixed bottom-6 right-6 flex flex-col items-end gap-2 z-[80]">
+            <button 
+              onClick={() => setShowContactButtons(false)}
+              className="w-6 h-6 bg-slate-200 text-slate-500 rounded-full flex items-center justify-center hover:bg-rose-500 hover:text-white transition-all shadow-sm mb-1"
+              title="Fermer"
+            >
+              <X className="w-3 h-3" />
+            </button>
+            
+            {/* WhatsApp Button */}
+            <a href={whatsappLink} target="_blank" rel="noreferrer" className="w-10 h-10 bg-[#25D366] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all" title="WhatsApp">
+              <MessageCircle size={18} fill="currentColor" />
+            </a>
+            
+            {/* LinkedIn Button */}
+            <a href={LINKEDIN_URL} target="_blank" rel="noreferrer" className="w-10 h-10 bg-[#0077B5] text-white rounded-full shadow-lg flex items-center justify-center hover:scale-110 active:scale-95 transition-all" title="LinkedIn">
+              <Linkedin size={18} fill="currentColor" />
+            </a>
+          </div>
+        )}
 
         {viewMode === 'map' ? (
           <InteractiveMap selectedId={selectedId} onSelect={setSelectedId} pan={pan} setPan={setPan} scale={scale} setScale={setScale} />
@@ -447,26 +466,19 @@ const App: React.FC = () => {
           </div>
         )}
 
-        {/* Floating Tool - To Switch to List view if needed */}
-        <button 
-          onClick={() => setViewMode(viewMode === 'map' ? 'list' : 'map')}
-          className={`fixed bottom-8 left-1/2 -translate-x-1/2 z-[130] lg:hidden bg-black text-white px-8 py-4 rounded-full font-black text-sm flex items-center gap-3 shadow-2xl active:scale-95 transition-all border-2 border-white`}
-        >
-          {viewMode === 'map' ? <><TableIcon className="w-5 h-5" /> عرض الفهرس</> : <><MapIcon className="w-5 h-5" /> عرض الخريطة</>}
-        </button>
-
-        {/* Selected Map Modal (Red and White themed, compact) */}
+        {/* Selected Map Modal (French Translation) */}
         {selectedMap && viewMode === 'map' && (
-          <div className="fixed bottom-36 left-1/2 -translate-x-1/2 z-[110] w-[85%] max-w-[340px] animate-in slide-in-from-bottom-10 duration-300">
-            <div className="bg-white p-6 rounded-[2rem] shadow-[0_40px_100px_rgba(0,0,0,0.3)] border-2 border-slate-100 flex flex-col items-center">
-               <button onClick={() => setSelectedId(null)} className="absolute top-4 left-4 p-1.5 text-slate-300 hover:text-black transition-colors"><X className="w-5 h-5" /></button>
-               <span className={`text-[${TUNISIA_RED}] text-[10px] font-black uppercase tracking-[0.2em] mb-2`}>SHEET {selectedMap.id}</span>
-               <h3 className="text-xl font-black text-black mb-6 text-center leading-none tracking-tight">{selectedMap.name}</h3>
+          <div className="fixed bottom-24 left-1/2 -translate-x-1/2 z-[110] w-[85%] max-w-[300px] animate-in slide-in-from-bottom-10 duration-300">
+            <div className="bg-white p-5 rounded-[1.5rem] shadow-[0_20px_60px_rgba(0,0,0,0.2)] border-2 border-slate-100 flex flex-col items-center">
+               <button onClick={() => setSelectedId(null)} className="absolute top-3 right-3 p-1.5 text-slate-300 hover:text-black transition-colors"><X className="w-4 h-4" /></button>
+               <span className={`text-[${TUNISIA_RED}] text-[9px] font-black uppercase tracking-[0.2em] mb-1`}>FEUILLE {selectedMap.id}</span>
+               <h3 className="text-lg font-black text-black mb-1 text-center leading-none">{selectedMap.name}</h3>
+               <p className="text-black/50 text-xs mb-5" dir="rtl">{selectedMap.nameAr}</p>
                <button 
                 onClick={() => { window.open(selectedMap.href, '_blank'); incrementDownload(selectedMap.id); }} 
-                className={`w-full bg-[#4ade80] hover:bg-[#22c55e] text-white py-3.5 rounded-2xl font-black text-base flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95`}
+                className={`w-full bg-[#4ade80] hover:bg-[#22c55e] text-white py-3 rounded-xl font-black text-sm flex items-center justify-center gap-3 transition-all shadow-lg active:scale-95`}
                >
-                  <Download className="w-5 h-5" />  télécharger   
+                  <Download className="w-4 h-4" />  Télécharger
                </button>
             </div>
           </div>
