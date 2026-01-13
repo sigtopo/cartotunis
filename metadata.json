@@ -1,0 +1,5 @@
+{
+  "name": "Tunisia Topographic Map Index (AMS L760)",
+  "description": "An interactive digital index of AMS L760 series (1/50,000 scale) topographic maps of Tunisia. Browse, search, and download maps directly through a visual coordinate grid.",
+  "requestFramePermissions": []
+}
