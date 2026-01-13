@@ -8,6 +8,8 @@ import {
 import { MAP_DATA, INDEX_IMAGE_URL } from './constants.ts';
 import { MapArea } from './types.ts';
 
+const CUSTOM_ICON_URL = "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEiBQH6f47cVdJ1fU-DZmPPG5PnKrbZhyaVNBe-TL2S2l-_Y9aUEvH9lbu8zyDc0kVDStDYa-_Prj_MWv1EVRIEBfEPYK0KJ954k01sFojNVOHcG6KTLDnX0ahYVSA5H2R-MOqdVp0F1EZbHq-yyc0_qnFGHFsktcrq7mlsPxCny8oXcVQAPZyP2OJKv1g/w165-h165/134ef7f1-ea1d-4243-9cd2-6473f1337f19.png";
+
 // WhatsApp SVG Icon
 const WhatsAppIcon = () => (
   <svg viewBox="0 0 24 24" width="24" height="24" fill="currentColor">
@@ -16,8 +18,6 @@ const WhatsAppIcon = () => (
 );
 
 const TUNISIA_RED = '#E70013';
-const TUNISIA_GREEN = '#22c55e';
-const LIGHT_GREEN = '#4ade80';
 
 const MapCard: React.FC<{
   map: MapArea;
@@ -86,8 +86,8 @@ const Sidebar: React.FC<{
 
       <div className={`p-6 border-b-4 border-[${TUNISIA_RED}] bg-white pt-16 lg:pt-6`}>
         <div className="flex items-center gap-3 mb-6">
-          <div className={`bg-[${TUNISIA_RED}] p-2 rounded-full`}>
-            <Globe className="w-5 h-5 text-white" />
+          <div className={`bg-white p-0.5 rounded-full shadow-sm overflow-hidden border border-slate-100`}>
+            <img src={CUSTOM_ICON_URL} alt="Logo" className="w-8 h-8 object-cover" />
           </div>
           <div>
             <h1 className="text-xl font-black text-black leading-none">خرائط تونس الطبوغرافية 1/50000</h1>
@@ -384,9 +384,7 @@ const App: React.FC = () => {
       {/* Mobile Header */}
       <div className={`lg:hidden flex items-center justify-between p-4 bg-white border-b-4 border-[${TUNISIA_RED}] z-50`}>
         <div className="flex items-center gap-2">
-          <div className={`bg-[${TUNISIA_RED}] p-2 rounded-full`}>
-            <Globe className="w-5 h-5 text-white" />
-          </div>
+          <img src={CUSTOM_ICON_URL} alt="Logo" className="w-8 h-8 rounded-full shadow-sm" />
           <span className="font-black text-black text-base">خرائط تونس الطبوغرافية 1/50000</span>
         </div>
         <button 
@@ -419,7 +417,7 @@ const App: React.FC = () => {
             </div>
           )}
           <button onClick={() => setShowSourceToast(!showSourceToast)} className={`w-14 h-14 bg-white rounded-full shadow-[0_10px_30px_rgba(0,0,0,0.1)] flex items-center justify-center hover:scale-110 active:scale-95 transition-all border-2 border-slate-100 overflow-hidden`}>
-            <img src="https://jemecasseausoleil.blogspot.com/favicon.ico" alt="Source" className="w-7 h-7" />
+            <img src={CUSTOM_ICON_URL} alt="Source" className="w-10 h-10 object-contain" />
           </button>
         </div>
 
