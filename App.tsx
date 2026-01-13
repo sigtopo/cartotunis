@@ -18,6 +18,7 @@ const WhatsAppIcon = () => (
 );
 
 const TUNISIA_RED = '#E70013';
+const SELECTION_GREEN = '#22c55e';
 
 const MapCard: React.FC<{
   map: MapArea;
@@ -27,7 +28,7 @@ const MapCard: React.FC<{
   onViewOnMap: (id: string) => void;
   isSelected?: boolean;
 }> = ({ map, isFavorite, onToggleFavorite, onDownload, onViewOnMap, isSelected }) => (
-  <div className={`group bg-white rounded-xl border-2 ${isSelected ? 'border-black ring-4 ring-black/5' : 'border-slate-100'} hover:border-[${TUNISIA_RED}] hover:shadow-2xl transition-all duration-300 flex flex-col h-full overflow-hidden`}>
+  <div className={`group bg-white rounded-xl border-2 ${isSelected ? 'border-black ring-4 ring-black/5' : 'border-slate-100'} hover:border-[${SELECTION_GREEN}] hover:shadow-2xl transition-all duration-300 flex flex-col h-full overflow-hidden`}>
     <div className="p-6 flex-1">
       <div className="flex justify-between items-start mb-4">
         <span className={`bg-[${TUNISIA_RED}] text-white text-[10px] font-black px-2.5 py-1 rounded-full uppercase tracking-tight`}>
@@ -40,7 +41,7 @@ const MapCard: React.FC<{
           <Heart className={`w-5 h-5 ${isFavorite ? 'fill-current' : ''}`} />
         </button>
       </div>
-      <h3 className="text-black font-black text-2xl leading-tight mb-2 group-hover:text-[${TUNISIA_RED}] transition-colors">
+      <h3 className="text-black font-black text-2xl leading-tight mb-2 group-hover:text-[${SELECTION_GREEN}] transition-colors">
         {map.name}
       </h3>
       <p className="text-black/50 text-xs font-bold uppercase tracking-widest">Tunisia • 1/50 000</p>
@@ -57,7 +58,7 @@ const MapCard: React.FC<{
         target="_blank" 
         rel="noreferrer" 
         onClick={() => onDownload(map.id)}
-        className={`bg-[${TUNISIA_RED}] hover:brightness-110 text-white p-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center`}
+        className={`bg-[${SELECTION_GREEN}] hover:brightness-110 text-white p-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center`}
         title="télécharger"
       >
         <Download className="w-5 h-5" />
@@ -113,9 +114,9 @@ const Sidebar: React.FC<{
           <div key={map.id} className="flex gap-2">
             <button
               onClick={() => onSelect(map.id)}
-              className={`flex-1 p-5 rounded-xl border-2 text-right transition-all flex items-center gap-4 group ${selectedId === map.id ? `bg-[${TUNISIA_RED}] border-[${TUNISIA_RED}] text-white` : 'bg-white border-slate-100 hover:border-slate-300 text-black'}`}
+              className={`flex-1 p-5 rounded-xl border-2 text-right transition-all flex items-center gap-4 group ${selectedId === map.id ? `bg-[${SELECTION_GREEN}] border-[${SELECTION_GREEN}] text-white` : 'bg-white border-slate-100 hover:border-slate-300 text-black'}`}
             >
-              <span className={`text-xs font-black px-2.5 py-1 rounded-full ${selectedId === map.id ? 'bg-white text-black' : `bg-[${TUNISIA_RED}]/10 text-[${TUNISIA_RED}]`}`}>
+              <span className={`text-xs font-black px-2.5 py-1 rounded-full ${selectedId === map.id ? 'bg-white text-black' : `bg-[${SELECTION_GREEN}]/10 text-[${SELECTION_GREEN}]`}`}>
                 {map.id}
               </span>
               <span className="text-lg font-black flex-1 truncate">{map.name}</span>
@@ -253,7 +254,7 @@ const InteractiveMap: React.FC<{
       <div className="absolute left-6 top-6 z-30">
         <button 
           onClick={() => setIsQuickSearchOpen(!isQuickSearchOpen)} 
-          className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all border-4 ${isQuickSearchOpen ? `bg-[${TUNISIA_RED}] text-white border-white` : 'bg-white text-black border-slate-100 hover:scale-105'}`} 
+          className={`w-14 h-14 rounded-full shadow-2xl flex items-center justify-center transition-all border-4 ${isQuickSearchOpen ? `bg-[${SELECTION_GREEN}] text-white border-white` : 'bg-white text-black border-slate-100 hover:scale-105'}`} 
         >
           {isQuickSearchOpen ? <X className="w-6 h-6" /> : <Search className="w-6 h-6" />}
         </button>
@@ -281,7 +282,7 @@ const InteractiveMap: React.FC<{
                 onClick={() => { onSelect(m.id); setIsQuickSearchOpen(false); }}
                 className="w-full flex items-center justify-between px-6 py-4 hover:bg-slate-50 transition-colors text-right border-b border-slate-50 last:border-0"
               >
-                <span className={`text-[10px] font-black text-white bg-[${TUNISIA_RED}] px-2.5 py-1 rounded-full`}>{m.id}</span>
+                <span className={`text-[10px] font-black text-white bg-[${SELECTION_GREEN}] px-2.5 py-1 rounded-full`}>{m.id}</span>
                 <span className="text-sm font-black text-black">{m.name}</span>
               </button>
             ))}
@@ -294,7 +295,7 @@ const InteractiveMap: React.FC<{
           className="fixed pointer-events-none z-[100] bg-white px-6 py-4 rounded-3xl shadow-2xl border-2 border-black -translate-x-1/2 -translate-y-[120%] flex flex-col items-center animate-in fade-in zoom-in duration-200"
           style={{ left: mousePos.x, top: mousePos.y }}
         >
-          <span className={`text-[${TUNISIA_RED}] text-[10px] font-black uppercase tracking-widest mb-1`}>Sheet {hoveredMap.id}</span>
+          <span className={`text-[${SELECTION_GREEN}] text-[10px] font-black uppercase tracking-widest mb-1`}>Sheet {hoveredMap.id}</span>
           <span className="text-black text-xl font-black">{hoveredMap.name}</span>
         </div>
       )}
@@ -315,8 +316,8 @@ const InteractiveMap: React.FC<{
                 onMouseEnter: () => setHoveredId(map.id),
                 onMouseLeave: () => setHoveredId(null),
                 style: {
-                    fill: (isSelected || isHovered) ? `${TUNISIA_RED}44` : 'transparent',
-                    stroke: (isSelected || isHovered) ? TUNISIA_RED : `${TUNISIA_RED}22`,
+                    fill: (isSelected || isHovered) ? `${SELECTION_GREEN}44` : 'transparent',
+                    stroke: (isSelected || isHovered) ? SELECTION_GREEN : `${SELECTION_GREEN}22`,
                     transition: 'all 0.2s ease'
                 },
                 className: "cursor-pointer",
@@ -341,7 +342,7 @@ const InteractiveMap: React.FC<{
         <div className="w-px h-5 bg-black/10"></div>
         <div className="flex items-center gap-2">استخدم العجلة للتقريب</div>
         <div className="w-px h-5 bg-black/10"></div>
-        <div className={`text-[${TUNISIA_RED}] font-black`}>{Math.round(scale * 100)}%</div>
+        <div className={`text-[${SELECTION_GREEN}] font-black`}>{Math.round(scale * 100)}%</div>
       </div>
     </div>
   );
