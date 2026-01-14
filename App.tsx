@@ -410,8 +410,8 @@ const App: React.FC = () => {
 
       <main className="flex-1 relative flex flex-col h-full overflow-hidden bg-white">
         
-        {/* Desktop Header - Only visible on computer */}
-        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-slate-100 z-40">
+        {/* Desktop Header - Visible only on computer, dir LTR */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-slate-100 z-40" dir="ltr">
           <div className="flex items-center gap-4">
             <img src={CUSTOM_ICON_URL} alt="Logo" className="w-10 h-10 rounded-full shadow-sm border border-slate-100" />
             <div>
