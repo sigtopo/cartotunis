@@ -409,6 +409,21 @@ const App: React.FC = () => {
       </div>
 
       <main className="flex-1 relative flex flex-col h-full overflow-hidden bg-white">
+        
+        {/* Desktop Header - Only visible on computer */}
+        <header className="hidden lg:flex items-center justify-between px-8 py-4 bg-white border-b border-slate-100 z-40">
+          <div className="flex items-center gap-4">
+            <img src={CUSTOM_ICON_URL} alt="Logo" className="w-10 h-10 rounded-full shadow-sm border border-slate-100" />
+            <div>
+              <h2 className="text-xl font-black text-black leading-none">{APP_TITLE}</h2>
+              <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest mt-1">Digital Index 1/50 000</p>
+            </div>
+          </div>
+          <div className="flex items-center gap-4">
+            <span className="text-[10px] font-black bg-slate-100 px-3 py-1 rounded-full text-slate-500 uppercase">AMS L760 SERIES</span>
+          </div>
+        </header>
+
         {/* Source Logo (Smaller) */}
         <div className="fixed bottom-6 left-6 z-[80] flex flex-col items-center">
           {showSourceToast && (
